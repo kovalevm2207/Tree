@@ -4,6 +4,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
+#include <time.h>
+
+const int MAX_FILE_NAME = 100;
 
 typedef int Tree_t;
 
@@ -19,7 +22,9 @@ typedef enum
 {
     TREE_OK                 = 1 << 0,
     CALLLOC_ERR             = 1 << 1,
-    TREE_ERR_NODE_NOT_EMPTY = 1 << 2
+    TREE_ERR_NODE_NOT_EMPTY = 1 << 2,
+    NULL_FILE               = 1 << 3,
+    END_FILE_ERR            = 1 << 4
 } TreeErr_t;
 
 Node_t* TreeNodeCtor(Tree_t data);
@@ -33,4 +38,21 @@ TreeErr_t PrintLeftTree(const Node_t* node, const char* mode);
 TreeErr_t PrintRightTree(const Node_t* node, const char* mode);
 TreeErr_t PrintTreeData(const Node_t* node, const char* mode);
 
-#endif
+TreeErr_t TreeDump_(const Node_t* node, int count_im, const char* func, const char* file, int line);
+FILE* StartHTMLfile(void);
+TreeErr_t CreateDotFile(const Node_t* node);
+TreeErr_t WriteInHtmlFile(const Node_t* node, int count_img, const char* func, const char* file, int line);
+int EndHTMLfile(void);
+
+#define TreeDump(node, count_img) TreeDump_(node, count_img, __func__, __FILE__, __LINE__)
+
+#ifdef DEBUG
+    #define CHECK_PTR(param, name) if (param == NULL)        \
+                                    {                        \
+                                        return NULL_##name;  \
+                                    }
+#else
+    #define CHECK_PTR(param, name)
+#endif // DEBUG
+
+#endif // TREE

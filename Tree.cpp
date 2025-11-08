@@ -153,3 +153,232 @@ TreeErr_t PrintTreeData(const Node_t* node, const char* mode)
 
     return TREE_OK;
 }
+
+
+TreeErr_t TreeDump_(const Node_t* node, int count_img, const char* func, const char* file, int line)
+{
+    assert(node != NULL);
+
+    CHECK_PTR(StartHTMLfile(), FILE)
+
+    CreateDotFile(node);
+    char command[MAX_FILE_NAME];
+    sprintf(command, "dot -Tsvg svg_dot/dump.dot -o svg_dot/%ddump.svg", count_img);
+    system(command);
+    WriteInHtmlFile(node, count_img, func, file, line);
+
+    if (EndHTMLfile() != 0) return END_FILE_ERR;
+
+    return TREE_OK;
+}
+
+
+FILE* StartHTMLfile(void)
+{
+    FILE* dump_file = fopen("dump.html", "w");
+    if(dump_file == NULL) return NULL;
+
+    time_t now = time(NULL);
+    struct tm *time_info = localtime(&now);
+
+    fprintf(dump_file, "<!DOCTYPE html>\n"
+                       "<html>\n"
+                       "<head>\n"
+                       "    <title>List Dump</title>\n"
+                       "</head>\n"
+                       "<body>\n"
+                       "<style>\n"
+                       "    * {\n"
+                       "       font-size: 20px;\n"
+                       "    }\n"
+                       "</style>\n"
+                       "<pre> Creation time (hours:min): %02d:%02d\n"
+                            " data (day:month:year): %02d:%02d:%d </pre>",
+                        time_info->tm_hour, time_info->tm_min,
+                        time_info->tm_mday, time_info->tm_mon + 1,
+                        time_info->tm_year + 1900);
+    fclose(dump_file);
+    return  dump_file;
+}
+
+
+TreeErr_t CreateDotFile(const Node_t* node)
+{
+    assert(node != NULL);
+
+    FILE* dump_file = fopen("svg_dot/dump.dot", "w");
+    assert(dump_file != NULL);
+
+    fprintf(dump_file, "digraph DUMP\n"
+                       "{\n"
+                       "    rankdir=LR;\n"
+                       "    splines=true;\n"
+                       "    node[shape=hexagon,"
+                                "style=\"filled\","
+                                "fillcolor=\"red\","
+                                "fontcolor=\"white\","
+                                "fontname=\"Arial\","
+                                "fontsize=24,"
+                                "width=1.2,"
+                                "height=1.8];\n"
+                       "    edge [style=\"bold\", "
+                                 "arrowhead=\"normal\", "
+                                 "splines=line, "
+                                 "dir=normal]\n");
+
+    /*MakeNodes(list, dump_file);
+    SetOrder(list, dump_file);
+    MakeArrows(list, dump_file);*/
+
+    fprintf(dump_file,"}\n");
+
+    fclose(dump_file);
+    return TREE_OK;
+}
+
+/*
+void MakeNodes(list_s* list, FILE* file)
+{
+    assert(list != NULL);
+
+    fprintf(file, "    index_0 [shape=Mrecord, style=\"filled\", fontcolor=\"black\", fontname=\"Arial\", fontsize=12,"
+                               "width=1.2, height=1.2,"
+                               "fillcolor = \"#f79642ff\","
+                               "label = \"<h> index_0 |"
+                               " <d> data = %d |"
+                               " { <p> TAIL = %ld | <n> HEAD = %ld }\"];\n",
+                  DATA(0), PREV(0), NEXT(0));
+
+    struct BaseArrow
+    {
+        const char* name;
+        long value;
+    } Arrows[] =
+    {
+        {"FREE", FREE},
+        {"HEAD", NEXT(0)},
+        {"TAIL", PREV(0)}
+    };
+
+    for (size_t i = 0; i < sizeof(Arrows)/sizeof(BaseArrow); i++)
+    {
+        fprintf(file, "    %s [shape=box, style=\"filled\", fontcolor=\"black\", fontname=\"Arial\", fontsize=12, "
+                                "width=1, height=0.5, "
+                                "fillcolor = \"#f79642ff\","
+                                "label = \" %s = %ld\"];\n",
+                    Arrows[i].name, Arrows[i].name, Arrows[i].value);
+    }
+
+    for(long index = 1; index < MAX_INDEX + 1; index++)
+    {
+        const char* shape_color = (DATA(index) == POISON) ? "\"palegreen\"" : "\"#81e6ffff\"";
+        fprintf(file, "    index_%ld [shape=Mrecord, style=\"filled\", fontcolor=\"black\", fontname=\"Arial\", fontsize=12,"
+                                     "width=1.2, height=1.2,"
+                                     "fillcolor=%s,"
+                                     "label = \"<h> index_%ld |"
+                                     " <d> data = %d |"
+                                     " { <p> prev = %ld | <n> next = %ld }\"];\n",
+                      index, shape_color, index, DATA(index), PREV(index), NEXT(index));
+    }
+}
+
+
+void SetOrder(list_s* list, FILE* file)
+{
+    fprintf(file, "  index_0");
+    for (int i = 1; i < MAX_INDEX + 1; i++)
+    {
+        if (DATA(i) != POISON)
+        {
+            fprintf(file, " -> index_%d", i);
+        }
+    }
+
+    for (int i = 1; i < MAX_INDEX + 1; i++)
+    {
+        if (DATA(i) == POISON)
+        {
+            fprintf(file, " -> index_%d", i);
+        }
+    }
+    fprintf(file, "[weight=1000, color=\"red\", style=\"invis\"];\n");
+}
+
+
+#define MAKE_BASE_ARROW()
+
+
+void MakeArrows(list_s* list, FILE* file)
+{
+    assert(list != NULL);
+
+    struct BaseArrow
+    {
+        const char* name;
+        long to;
+    } Arrows[] =
+    {
+        {"FREE", FREE},
+        {"HEAD", NEXT(0)},
+        {"TAIL", PREV(0)}
+    };
+
+    for (size_t i = 0; i < sizeof(Arrows)/sizeof(BaseArrow); i++)
+    {
+        fprintf(file, "    %s -> index_%ld [color=\"#f79642ff\", "
+                                            "style=\"bold,dashed\", "
+                                            "arrowhead=\"normal\"];",
+                      Arrows[i].name, Arrows[i].to);
+    }
+
+    for (long i = 1; i < MAX_INDEX + 1; i++)
+    {
+        const char* next_color = (DATA(i) == POISON) ? "#0f5f13" : "#1114ff";
+        const char* prev_color = (DATA(i) == POISON) ? "#87c58a" : "#7bcfff";
+
+            fprintf(file, "    index_%ld:h -> index_%ld:h [dir=normal, color=\"%s\"];\n"
+                          "    index_%ld:p -> index_%ld:n [dir=normal, color=\"%s\"];\n",
+                           i, NEXT(i), next_color,
+                           i, PREV(i), prev_color);
+    }
+}*/
+
+
+TreeErr_t WriteInHtmlFile(const Node_t* node, int count_img, const char* func, const char* file, int line)
+{
+    assert(node != NULL);
+    assert(func != NULL);
+    assert(file != NULL);
+
+    FILE* dump_file = fopen("dump.html", "a");
+    CHECK_PTR(dump_file, FILE);
+
+    fprintf(dump_file, "<pre><b>ListDump from %s at %s:%d\n",
+                       func, file, line);
+    //PrintStatus((int*) status, DUMP_FILE);
+
+    /*if (!(*status & NULL_DATA || *status & NULL_NEXT || *status & NULL_PREV))
+    {
+        PrintList(list);
+    }*/
+
+    fprintf(dump_file, "    <img src=\"svg_dot/%ddump.svg\">\n",
+                             count_img);
+
+    //COUNT_IMG++;
+
+    fclose(dump_file);
+
+    return TREE_OK;
+}
+
+
+int EndHTMLfile(void)
+{
+    FILE* dump_file = fopen("dump.html", "a");
+
+    fprintf(dump_file, "</body>\n"
+                       "</html>\n");
+
+    return fclose(dump_file);
+}
