@@ -22,13 +22,16 @@ int main()
            "|         node2 (addres in mem: %p)\n"
            "|      data: %3d\n"
            "|       left:      right:\n"
-           "| %p             %p\n\n", node2->root, *(node2->root), node2, node2->data, node2->left, node2->right);
+           "| %p             %p\n"
+           "|    rank = %d\n\n", node2->root, *(node2->root), node2, node2->data, node2->left, node2->right, node2->rank);
 
     printf("|     root: %p (root value: %p)\n"
            "|         node4 (addres in mem: %p)\n"
            "|      data: %3d\n"
            "|       left:      right:\n"
-           "| %p             %p\n\n", node4->root, *(node4->root), node4, node4->data, node4->left, node4->right);
+           "| %p             %p\n"
+           "|    rank = %d\n\n", node4->root, *(node4->root), node4, node4->data, node4->left, node4->right, node4->rank);
+
 
     printf("\n");
 
@@ -59,6 +62,12 @@ int main()
     Node_t* node5 = TreeNodeCtor(35);
     TreeInsertRight(node3, node5);
 
+    Node_t* node6 = TreeNodeCtor(15);
+    TreeSortInsert(node1, node6);
+
+    Node_t* node7 = TreeNodeCtor(1);
+    TreeSortInsert(node1, node6);
+
     PrintTreeNode(node1, "m");
     printf("\n\n");
 
@@ -72,6 +81,8 @@ int main()
     free(node3);
     free(node4);
     free(node5);
+    free(node6);
+    free(node7);
 
     return 0;
 }

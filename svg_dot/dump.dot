@@ -1,12 +1,60 @@
 digraph DUMP
 {
-    rankdir=LR;
-    splines=true;
-    node[shape=hexagon,style="filled",fillcolor="red",fontcolor="white",fontname="Arial",fontsize=24,width=1.2,height=1.8];
+    rankdir=TB;
+    splines=false;
+    node[fontname="Arial",fontsize=24,];
     edge [style="bold", arrowhead="normal", splines=line, dir=normal]
-    node0 [shape=Mrecord, style="filled", fontcolor="black", fontname="Arial", fontsize=12,width=1.2, height=1.2,fillcolor = "#0e7696ff",label = "<h> 0x503000000040 | <d> 10 | { <l> 0x503000000070 | <r> 0x5030000000a0 }"];
-    node1 [shape=Mrecord, style="filled", fontcolor="black", fontname="Arial", fontsize=12,width=1.2, height=1.2,fillcolor = "#0e7696ff",label = "<h> 0x503000000070 | <d> 7 | { <l> 0x503000000100 | <r> (nil) }"];
-    node2 [shape=Mrecord, style="filled", fontcolor="black", fontname="Arial", fontsize=12,width=1.2, height=1.2,fillcolor = "#0e7696ff",label = "<h> 0x503000000100 | <d> 3 | { <l> (nil) | <r> (nil) }"];
-    node3 [shape=Mrecord, style="filled", fontcolor="black", fontname="Arial", fontsize=12,width=1.2, height=1.2,fillcolor = "#0e7696ff",label = "<h> 0x5030000000a0 | <d> 20 | { <l> (nil) | <r> 0x503000000130 }"];
-    node4 [shape=Mrecord, style="filled", fontcolor="black", fontname="Arial", fontsize=12,width=1.2, height=1.2,fillcolor = "#0e7696ff",label = "<h> 0x503000000130 | <d> 35 | { <l> (nil) | <r> (nil) }"];
+    node0 [shape=plaintext, label=<
+        <TABLE BORDER="0" CELLBORDER="2" CELLSPACING="3" CELLPADDING="3" BGCOLOR="#0bdfeeff" FIXEDSIZE="FALSE" ALIGN="CENTER" VALIGN="MIDDLE" SIDES="LRTB" >
+            <TR><TD PORT="h" BGCOLOR="#777777ff" COLSPAN="2" COLOR="#383838ff">node0</TD></TR>
+            <TR><TD PORT="p" BGCOLOR="#db9721ff" COLSPAN="2" COLOR="#000000">0x504000000010</TD></TR>
+            <TR><TD PORT="d" BGCOLOR="#540e96ff" COLSPAN="2" COLOR="#000000">10</TD></TR>
+            <TR><TD PORT="l" BGCOLOR="#db9721ff" COLSPAN="1" ALIGN="CENTER" COLOR="#000000">0x504000000050</TD><TD PORT="r" BGCOLOR="#db9721ff" COLSPAN="1" ALIGN="CENTER" COLOR="#000000">0x504000000090</TD></TR>
+        </TABLE>
+    >];
+    node1 [shape=plaintext, label=<
+        <TABLE BORDER="0" CELLBORDER="2" CELLSPACING="3" CELLPADDING="3" BGCOLOR="#0bdfeeff" FIXEDSIZE="FALSE" ALIGN="CENTER" VALIGN="MIDDLE" SIDES="LRTB" >
+            <TR><TD PORT="h" BGCOLOR="#777777ff" COLSPAN="2" COLOR="#383838ff">node1</TD></TR>
+            <TR><TD PORT="p" BGCOLOR="#db9721ff" COLSPAN="2" COLOR="#000000">0x504000000050</TD></TR>
+            <TR><TD PORT="d" BGCOLOR="#540e96ff" COLSPAN="2" COLOR="#000000">7</TD></TR>
+            <TR><TD PORT="l" BGCOLOR="#db9721ff" COLSPAN="1" ALIGN="CENTER" COLOR="#000000">0x504000000110</TD><TD PORT="r" BGCOLOR="#db9721ff" COLSPAN="1" ALIGN="CENTER" COLOR="#000000">0x000000000000</TD></TR>
+        </TABLE>
+    >];
+    node2 [shape=plaintext, label=<
+        <TABLE BORDER="0" CELLBORDER="2" CELLSPACING="3" CELLPADDING="3" BGCOLOR="#0bdfeeff" FIXEDSIZE="FALSE" ALIGN="CENTER" VALIGN="MIDDLE" SIDES="LRTB" >
+            <TR><TD PORT="h" BGCOLOR="#777777ff" COLSPAN="2" COLOR="#383838ff">node2</TD></TR>
+            <TR><TD PORT="p" BGCOLOR="#db9721ff" COLSPAN="2" COLOR="#000000">0x504000000110</TD></TR>
+            <TR><TD PORT="d" BGCOLOR="#540e96ff" COLSPAN="2" COLOR="#000000">3</TD></TR>
+            <TR><TD PORT="l" BGCOLOR="#db9721ff" COLSPAN="1" ALIGN="CENTER" COLOR="#000000">0x000000000000</TD><TD PORT="r" BGCOLOR="#db9721ff" COLSPAN="1" ALIGN="CENTER" COLOR="#000000">0x000000000000</TD></TR>
+        </TABLE>
+    >];
+    node3 [shape=plaintext, label=<
+        <TABLE BORDER="0" CELLBORDER="2" CELLSPACING="3" CELLPADDING="3" BGCOLOR="#0bdfeeff" FIXEDSIZE="FALSE" ALIGN="CENTER" VALIGN="MIDDLE" SIDES="LRTB" >
+            <TR><TD PORT="h" BGCOLOR="#777777ff" COLSPAN="2" COLOR="#383838ff">node3</TD></TR>
+            <TR><TD PORT="p" BGCOLOR="#db9721ff" COLSPAN="2" COLOR="#000000">0x504000000090</TD></TR>
+            <TR><TD PORT="d" BGCOLOR="#540e96ff" COLSPAN="2" COLOR="#000000">20</TD></TR>
+            <TR><TD PORT="l" BGCOLOR="#db9721ff" COLSPAN="1" ALIGN="CENTER" COLOR="#000000">0x504000000190</TD><TD PORT="r" BGCOLOR="#db9721ff" COLSPAN="1" ALIGN="CENTER" COLOR="#000000">0x504000000150</TD></TR>
+        </TABLE>
+    >];
+    node4 [shape=plaintext, label=<
+        <TABLE BORDER="0" CELLBORDER="2" CELLSPACING="3" CELLPADDING="3" BGCOLOR="#0bdfeeff" FIXEDSIZE="FALSE" ALIGN="CENTER" VALIGN="MIDDLE" SIDES="LRTB" >
+            <TR><TD PORT="h" BGCOLOR="#777777ff" COLSPAN="2" COLOR="#383838ff">node4</TD></TR>
+            <TR><TD PORT="p" BGCOLOR="#db9721ff" COLSPAN="2" COLOR="#000000">0x504000000190</TD></TR>
+            <TR><TD PORT="d" BGCOLOR="#540e96ff" COLSPAN="2" COLOR="#000000">15</TD></TR>
+            <TR><TD PORT="l" BGCOLOR="#db9721ff" COLSPAN="1" ALIGN="CENTER" COLOR="#000000">0x000000000000</TD><TD PORT="r" BGCOLOR="#db9721ff" COLSPAN="1" ALIGN="CENTER" COLOR="#000000">0x000000000000</TD></TR>
+        </TABLE>
+    >];
+    node5 [shape=plaintext, label=<
+        <TABLE BORDER="0" CELLBORDER="2" CELLSPACING="3" CELLPADDING="3" BGCOLOR="#0bdfeeff" FIXEDSIZE="FALSE" ALIGN="CENTER" VALIGN="MIDDLE" SIDES="LRTB" >
+            <TR><TD PORT="h" BGCOLOR="#777777ff" COLSPAN="2" COLOR="#383838ff">node5</TD></TR>
+            <TR><TD PORT="p" BGCOLOR="#db9721ff" COLSPAN="2" COLOR="#000000">0x504000000150</TD></TR>
+            <TR><TD PORT="d" BGCOLOR="#540e96ff" COLSPAN="2" COLOR="#000000">35</TD></TR>
+            <TR><TD PORT="l" BGCOLOR="#db9721ff" COLSPAN="1" ALIGN="CENTER" COLOR="#000000">0x000000000000</TD><TD PORT="r" BGCOLOR="#db9721ff" COLSPAN="1" ALIGN="CENTER" COLOR="#000000">0x000000000000</TD></TR>
+        </TABLE>
+    >];
+    node0:<l> -> node1:n [dir=normal, color="#4d00a6ff"];
+    node1:<l> -> node2:n [dir=normal, color="#4d00a6ff"];
+    node0:<r> -> node3:n [dir=normal, color="#4d00a6ff"];
+    node3:<l> -> node4:n [dir=normal, color="#4d00a6ff"];
+    node3:<r> -> node5:n [dir=normal, color="#4d00a6ff"];
 }

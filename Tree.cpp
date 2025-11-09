@@ -8,6 +8,7 @@ Node_t* TreeNodeCtor(Tree_t data)
     node->root = NULL;
     node->data = data;
     node->left = node->right = NULL;
+    node->rank = 0;
 
     return node;
 }
@@ -19,6 +20,7 @@ TreeErr_t TreeInsertLeft(Node_t* base_node, Node_t* inserting_node)
 
     base_node->left = inserting_node;
     inserting_node->root = &base_node->left;
+    inserting_node->rank = base_node->rank + 1;
 
     return TREE_OK;
 }
@@ -30,6 +32,7 @@ TreeErr_t TreeInsertRight(Node_t* base_node, Node_t* inserting_node)
 
     base_node->right = inserting_node;
     inserting_node->root = &base_node->right;
+    inserting_node->rank = base_node->rank + 1;
 
     return TREE_OK;
 }
@@ -44,11 +47,13 @@ TreeErr_t TreeSortInsert(Node_t* root, Node_t* node)
     {
         if(node->data <= root->data)
         {
+            if (root->left == node) return TREE_ERR_DUPLICATE_NODE;
             if (TreeInsertLeft(root, node) == TREE_OK) break;
-            else root = root->right;
+            else root = root->left;
         }
         else
         {
+            if (root->right == node) return TREE_ERR_DUPLICATE_NODE;
             if(TreeInsertRight(root, node) == TREE_OK) break;
             else root = root->right;
         }
@@ -65,6 +70,7 @@ TreeErr_t DeleteTreeNode(Node_t* node)
     if (node->left)  DeleteTreeNode(node->left);
     if (node->right) DeleteTreeNode(node->right);
     node->data = 0;
+    node->rank = 0;
     if (node->root) *node->root = NULL;
 
     return TREE_OK;
@@ -184,7 +190,7 @@ FILE* StartHTMLfile(void)
     fprintf(dump_file, "<!DOCTYPE html>\n"
                        "<html>\n"
                        "<head>\n"
-                       "    <title>List Dump</title>\n"
+                       "    <title>Tree Dump</title>\n"
                        "</head>\n"
                        "<body>\n"
                        "<style>\n"
@@ -211,16 +217,18 @@ TreeErr_t CreateDotFile(const Node_t* node)
 
     fprintf(dump_file, "digraph DUMP\n"
                        "{\n"
-                       "    rankdir=LR;\n"
-                       "    splines=true;\n"
-                       "    node[shape=hexagon,"
-                                "style=\"filled\","
-                                "fillcolor=\"red\","
-                                "fontcolor=\"white\","
+                       "    rankdir=TB;\n"
+                       "    splines=false;\n"
+                       "    node["
+                                // "shape=hexagon,"
+                                // "style=\"filled\","
+                                // "fillcolor=\"red\","
+                                // "fontcolor=\"white\","
                                 "fontname=\"Arial\","
                                 "fontsize=24,"
-                                "width=1.2,"
-                                "height=1.8];\n"
+                                // "width=1.8,"
+                                // "height=1.8"
+                                "];\n"
                        "    edge [style=\"bold\", "
                                  "arrowhead=\"normal\", "
                                  "splines=line, "
@@ -228,8 +236,9 @@ TreeErr_t CreateDotFile(const Node_t* node)
 
     int node_count = 0;
     MakeNodes(node, &node_count, dump_file);
-    /*SetOrder(list, dump_file);
-    MakeArrows(list, dump_file);*/
+
+    node_count = 0;
+    MakeArrows(node, &node_count, dump_file);
 
     fprintf(dump_file,"}\n");
 
@@ -243,13 +252,63 @@ void MakeNodes(const Node_t* node, int* node_count, FILE* file)
     assert(node != NULL);
     assert(file != NULL);
 
-    fprintf(file, "    node%d [shape=Mrecord, style=\"filled\", fontcolor=\"black\", fontname=\"Arial\", fontsize=12,"
-                               "width=1.2, height=1.2,"
-                               "fillcolor = \"#0e7696ff\","
-                               "label = \"<h> %p |"
-                               " <d> %d |"
-                               " { <l> %p | <r> %p }\"];\n",
-                  *node_count, node, node->data, node->left, node->right);
+    fprintf(file,
+        "    node%d [shape=plaintext, label=<\n"
+        "        <TABLE BORDER=\"0\" "         // толщина внешней рамки таблицы
+                 "CELLBORDER=\"2\" "           // толщина рамок ячеек
+                 "CELLSPACING=\"3\" "          // расстояние между ячейками
+                 "CELLPADDING=\"3\" "          // отступы внутри ячеек (от текста до рамки)
+                 "BGCOLOR=\"#0bdfeeff\" "    // Цвет фона всей таблицы
+                 "FIXEDSIZE=\"FALSE\" "        // фиксированный размер (игнорирует содержимое)
+                 "ALIGN=\"CENTER\" "           // Горизонтальное выравнивание
+                 "VALIGN=\"MIDDLE\" "          // Вертикальное выравнивание
+                 "SIDES=\"LRTB\" "          // Какие стороны рамки показывать
+                 ">\n"
+        "            <TR><TD PORT=\"h\" "
+                        "BGCOLOR=\"#777777ff\" "
+                        "COLSPAN=\"2\" "
+                        "COLOR=\"#383838ff\">"
+                            "node%d"
+                    "</TD></TR>\n"
+        "            <TR><TD PORT=\"p\" "
+                        "BGCOLOR=\"#db9721ff\" "
+                        "COLSPAN=\"2\" "
+                        "COLOR=\"#000000\">"
+                            "%p"
+                    "</TD></TR>\n"
+        "            <TR><TD PORT=\"d\" "
+                        "BGCOLOR=\"#540e96ff\" "
+                        "COLSPAN=\"2\" "
+                        "COLOR=\"#000000\">"
+                            "%d"
+                    "</TD></TR>\n",
+        *node_count, *node_count, node, node->data
+    );
+
+    fprintf(file, "            <TR><TD PORT=\"l\" "
+                                  "BGCOLOR=\"#db9721ff\" "
+                                  "COLSPAN=\"1\" "
+                                  "ALIGN=\"CENTER\" "
+                                  "COLOR=\"#000000\">");
+    if (node->left)
+        fprintf(file, "%p</TD>", node->left);
+    else
+        fprintf(file, "0x000000000000</TD>");
+
+    fprintf(file, "<TD PORT=\"r\" "
+                  "BGCOLOR=\"#db9721ff\" "
+                  "COLSPAN=\"1\" "
+                  "ALIGN=\"CENTER\" "
+                  "COLOR=\"#000000\">");
+    if (node->right)
+        fprintf(file, "%p</TD></TR>\n", node->right);
+    else
+        fprintf(file, "0x000000000000</TD></TR>\n");
+
+    fprintf(file,
+        "        </TABLE>\n"
+        "    >];\n"
+    );
 
     if (node->left)
     {
@@ -266,65 +325,26 @@ void MakeNodes(const Node_t* node, int* node_count, FILE* file)
 }
 
 
-/*void SetOrder(list_s* list, FILE* file)
+void MakeArrows(const Node_t* node, int* node_count, FILE* file)
 {
-    fprintf(file, "  index_0");
-    for (int i = 1; i < MAX_INDEX + 1; i++)
-    {
-        if (DATA(i) != POISON)
-        {
-            fprintf(file, " -> index_%d", i);
-        }
-    }
+    assert(node != NULL);
+    assert(file != NULL);
 
-    for (int i = 1; i < MAX_INDEX + 1; i++)
+    int cur_node_count = *node_count;
+
+    if (node->left)
     {
-        if (DATA(i) == POISON)
-        {
-            fprintf(file, " -> index_%d", i);
-        }
+        fprintf(file, "    node%d:<l> -> node%d:n [dir=normal, color=\"#4d00a6ff\"];\n",
+                       cur_node_count, ++*node_count);
+        MakeArrows(node->left, node_count, file);
     }
-    fprintf(file, "[weight=1000, color=\"red\", style=\"invis\"];\n");
+    if (node->right)
+    {
+        fprintf(file, "    node%d:<r> -> node%d:n [dir=normal, color=\"#4d00a6ff\"];\n",
+                      cur_node_count, ++*node_count);
+        MakeArrows(node->right, node_count, file);
+    }
 }
-
-
-#define MAKE_BASE_ARROW()
-
-
-void MakeArrows(list_s* list, FILE* file)
-{
-    assert(list != NULL);
-
-    struct BaseArrow
-    {
-        const char* name;
-        long to;
-    } Arrows[] =
-    {
-        {"FREE", FREE},
-        {"HEAD", NEXT(0)},
-        {"TAIL", PREV(0)}
-    };
-
-    for (size_t i = 0; i < sizeof(Arrows)/sizeof(BaseArrow); i++)
-    {
-        fprintf(file, "    %s -> index_%ld [color=\"#f79642ff\", "
-                                            "style=\"bold,dashed\", "
-                                            "arrowhead=\"normal\"];",
-                      Arrows[i].name, Arrows[i].to);
-    }
-
-    for (long i = 1; i < MAX_INDEX + 1; i++)
-    {
-        const char* next_color = (DATA(i) == POISON) ? "#0f5f13" : "#1114ff";
-        const char* prev_color = (DATA(i) == POISON) ? "#87c58a" : "#7bcfff";
-
-            fprintf(file, "    index_%ld:h -> index_%ld:h [dir=normal, color=\"%s\"];\n"
-                          "    index_%ld:p -> index_%ld:n [dir=normal, color=\"%s\"];\n",
-                           i, NEXT(i), next_color,
-                           i, PREV(i), prev_color);
-    }
-}*/
 
 
 TreeErr_t WriteInHtmlFile(const Node_t* node, int count_img, const char* func, const char* file, int line)
@@ -336,19 +356,11 @@ TreeErr_t WriteInHtmlFile(const Node_t* node, int count_img, const char* func, c
     FILE* dump_file = fopen("dump.html", "a");
     CHECK_PTR(dump_file, FILE);
 
-    fprintf(dump_file, "<pre><b>ListDump from %s at %s:%d\n",
+    fprintf(dump_file, "<pre><b>TreeDump from %s at %s:%d\n",
                        func, file, line);
-    //PrintStatus((int*) status, DUMP_FILE);
-
-    /*if (!(*status & NULL_DATA || *status & NULL_NEXT || *status & NULL_PREV))
-    {
-        PrintList(list);
-    }*/
 
     fprintf(dump_file, "    <img src=\"svg_dot/%ddump.svg\">\n",
                              count_img);
-
-    //COUNT_IMG++;
 
     fclose(dump_file);
 
