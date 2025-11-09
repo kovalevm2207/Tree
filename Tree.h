@@ -41,10 +41,12 @@ TreeErr_t PrintTreeData(const Node_t* node, const char* mode);
 TreeErr_t TreeDump_(const Node_t* node, int count_im, const char* func, const char* file, int line);
 FILE* StartHTMLfile(void);
 TreeErr_t CreateDotFile(const Node_t* node);
+void MakeNodes(const Node_t* node, int* node_count, FILE* file);
 TreeErr_t WriteInHtmlFile(const Node_t* node, int count_img, const char* func, const char* file, int line);
 int EndHTMLfile(void);
 
 #define TreeDump(node, count_img) TreeDump_(node, count_img, __func__, __FILE__, __LINE__)
+#define STRING(text) #text
 
 #ifdef DEBUG
     #define CHECK_PTR(param, name) if (param == NULL)        \

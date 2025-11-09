@@ -4,4 +4,9 @@ digraph DUMP
     splines=true;
     node[shape=hexagon,style="filled",fillcolor="red",fontcolor="white",fontname="Arial",fontsize=24,width=1.2,height=1.8];
     edge [style="bold", arrowhead="normal", splines=line, dir=normal]
+    node0 [shape=Mrecord, style="filled", fontcolor="black", fontname="Arial", fontsize=12,width=1.2, height=1.2,fillcolor = "#0e7696ff",label = "<h> 0x503000000040 | <d> 10 | { <l> 0x503000000070 | <r> 0x5030000000a0 }"];
+    node1 [shape=Mrecord, style="filled", fontcolor="black", fontname="Arial", fontsize=12,width=1.2, height=1.2,fillcolor = "#0e7696ff",label = "<h> 0x503000000070 | <d> 7 | { <l> 0x503000000100 | <r> (nil) }"];
+    node2 [shape=Mrecord, style="filled", fontcolor="black", fontname="Arial", fontsize=12,width=1.2, height=1.2,fillcolor = "#0e7696ff",label = "<h> 0x503000000100 | <d> 3 | { <l> (nil) | <r> (nil) }"];
+    node3 [shape=Mrecord, style="filled", fontcolor="black", fontname="Arial", fontsize=12,width=1.2, height=1.2,fillcolor = "#0e7696ff",label = "<h> 0x5030000000a0 | <d> 20 | { <l> (nil) | <r> 0x503000000130 }"];
+    node4 [shape=Mrecord, style="filled", fontcolor="black", fontname="Arial", fontsize=12,width=1.2, height=1.2,fillcolor = "#0e7696ff",label = "<h> 0x503000000130 | <d> 35 | { <l> (nil) | <r> (nil) }"];
 }

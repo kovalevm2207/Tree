@@ -65,6 +65,7 @@ int main()
     TreeDump(node1, 1);
     system("google-chrome dump.html");
 
+
     DeleteTreeNode(node1);
     free(node1);
     free(node2);
