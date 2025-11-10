@@ -29,11 +29,14 @@ else
 	FLAGS = $(DED_FLAGS_LINUX)
 endif
 
-all: Tree.o TreeTest.o
-	@ g++ $(FLAGS) $(MODE) Tree.o TreeTest.o -o tree
+all: Tree.o TreeTest.o TreeDump.o
+	@ g++ $(FLAGS) $(MODE) Tree.o TreeTest.o TreeDump.o -o tree
 
-Tree.o: Tree.cpp Tree.h
+Tree.o: Tree.cpp Tree.h TreeBase.h
 	@ g++ $(FLAGS) $(MODE) -c Tree.cpp -o Tree.o
+
+TreeDump.o: TreeDump.cpp TreeDump.h Tree.h TreeBase.h
+	@ g++ $(FLAGS) $(MODE) -c TreeDump.cpp -o TreeDump.o
 
 TreeTest.o: TreeTest.cpp Tree.h
 	@ g++ $(FLAGS) $(MODE) -c TreeTest.cpp -o TreeTest.o
