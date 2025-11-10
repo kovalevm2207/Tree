@@ -1,5 +1,7 @@
 #include "Tree.h"
 
+// to do: передавать поддеревья
+
 Node_t* TreeNodeCtor(Tree_t data)
 {
     Node_t* node = (Node_t*) calloc(1, sizeof(Node_t));
@@ -69,9 +71,12 @@ TreeErr_t DeleteTreeNode(Node_t* node)
 
     if (node->left)  DeleteTreeNode(node->left);
     if (node->right) DeleteTreeNode(node->right);
+
     node->data = 0;
     node->rank = 0;
     if (node->root) *node->root = NULL;
+
+// to do free();
 
     return TREE_OK;
 }
@@ -265,45 +270,43 @@ void MakeNodes(const Node_t* node, int* node_count, FILE* file)
                  "SIDES=\"LRTB\" "          // Какие стороны рамки показывать
                  ">\n"
         "            <TR><TD PORT=\"h\" "
-                        "BGCOLOR=\"#777777ff\" "
+                        "BGCOLOR=\"#ffffffff\" "
                         "COLSPAN=\"2\" "
                         "COLOR=\"#383838ff\">"
                             "node%d"
                     "</TD></TR>\n"
         "            <TR><TD PORT=\"p\" "
-                        "BGCOLOR=\"#db9721ff\" "
+                        "BGCOLOR=\"%s\" "
                         "COLSPAN=\"2\" "
                         "COLOR=\"#000000\">"
                             "%p"
                     "</TD></TR>\n"
         "            <TR><TD PORT=\"d\" "
-                        "BGCOLOR=\"#540e96ff\" "
+                        "BGCOLOR=\"#c5a1e6ff\" "
                         "COLSPAN=\"2\" "
                         "COLOR=\"#000000\">"
                             "%d"
                     "</TD></TR>\n",
-        *node_count, *node_count, node, node->data
+        *node_count, *node_count, GenerateColor(node), node, node->data
     );
 
     fprintf(file, "            <TR><TD PORT=\"l\" "
-                                  "BGCOLOR=\"#db9721ff\" "
                                   "COLSPAN=\"1\" "
                                   "ALIGN=\"CENTER\" "
-                                  "COLOR=\"#000000\">");
+                                  "COLOR=\"#000000\" ");
     if (node->left)
-        fprintf(file, "%p</TD>", node->left);
+        fprintf(file, "BGCOLOR=\"%s\">%p</TD>", GenerateColor(node->left), node->left);
     else
-        fprintf(file, "0x000000000000</TD>");
+        fprintf(file, "BGCOLOR=\"%s\">0x000000000000</TD>", GenerateColor(node->left));
 
     fprintf(file, "<TD PORT=\"r\" "
-                  "BGCOLOR=\"#db9721ff\" "
                   "COLSPAN=\"1\" "
                   "ALIGN=\"CENTER\" "
-                  "COLOR=\"#000000\">");
+                  "COLOR=\"#000000\" ");
     if (node->right)
-        fprintf(file, "%p</TD></TR>\n", node->right);
+        fprintf(file, "BGCOLOR=\"%s\">%p</TD></TR>\n", GenerateColor(node->right), node->right);
     else
-        fprintf(file, "0x000000000000</TD></TR>\n");
+        fprintf(file, "BGCOLOR=\"%s\">0x000000000000</TD></TR>\n", GenerateColor(node->right));
 
     fprintf(file,
         "        </TABLE>\n"
@@ -322,6 +325,34 @@ void MakeNodes(const Node_t* node, int* node_count, FILE* file)
     }
 
     return;
+}
+
+
+const char* GenerateColor(const void* ptr)
+{
+    if (ptr == NULL) return "#cccccc";
+
+    uintptr_t hash = (uintptr_t)ptr;
+    unsigned int hue = (unsigned int) hash % 360;
+
+    unsigned int sector = hue / 60;
+    unsigned int sector_position = hue % 60;
+
+    unsigned int r = 0, g = 0, b = 0;
+
+    switch (sector) {
+        case 0: r = 255;                              g = sector_position * 255 / 60; break; /* b = 0; */                                 // Красный → Желтый
+        case 1: r = 255 - sector_position * 255 / 60; g = 255; break;                        /* b = 0; */                                 // Желтый → Зеленый
+        case 2: /* r = 0; */                          g = 255;                               b = sector_position * 255 / 60; break;       // Зеленый → Голубой
+        case 3: /* r = 0; */                          g = 255 - sector_position * 255 / 60;  b = 255; break;                              // Голубой → Синий
+        case 4: r = sector_position * 255 / 60;       /*g = 0; */                            b = 255; break;                              // Синий → Пурпурный
+        case 5: r = 255;                              /*g = 0; */                            b = 255 - sector_position * 255 / 60; break; // Пурпурный → Красный
+        default: return NULL;
+    }
+
+    static char hex[8];
+    snprintf(hex, sizeof(hex), "#%02x%02x%02x", r, g, b);
+    return hex;
 }
 
 

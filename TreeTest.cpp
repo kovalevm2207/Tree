@@ -66,11 +66,30 @@ int main()
     TreeSortInsert(node1, node6);
 
     Node_t* node7 = TreeNodeCtor(1);
-    TreeSortInsert(node1, node6);
+    TreeSortInsert(node1, node7);
+
+    Node_t* node8 = TreeNodeCtor(9);
+    TreeSortInsert(node1, node8);
 
     PrintTreeNode(node1, "m");
     printf("\n\n");
 
+    printf("%s\n", GenerateColor(node1));
+    printf("%s\n", GenerateColor(node2));
+    printf("%s\n", GenerateColor(node3));
+    printf("%s\n", GenerateColor(node4));
+    printf("%s\n", GenerateColor(node5));
+    printf("%s\n", GenerateColor(node6));
+    printf("%s\n", GenerateColor(node7));
+/*
+#ff4400
+#aaff00
+#00ff66
+#8800ff
+#ff0066
+#ffaa00
+#44ff00
+*/
     TreeDump(node1, 1);
     system("google-chrome dump.html");
 
@@ -83,6 +102,7 @@ int main()
     free(node5);
     free(node6);
     free(node7);
+    free(node8);
 
     return 0;
 }
