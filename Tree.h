@@ -18,7 +18,6 @@ typedef struct Node_t
     Tree_t data;
     Node_t* left;
     Node_t* right;
-    int rank;
 } Node_t;
 
 typedef enum
@@ -31,7 +30,7 @@ typedef enum
     TREE_ERR_DUPLICATE_NODE = 1 << 5
 } TreeErr_t;
 
-Node_t* TreeNodeCtor(Tree_t data);
+Node_t* TreeNodeCtor(Tree_t data, Node_t* left_som, Node_t* right_som);
 TreeErr_t TreeInsertLeft(Node_t* base_node, Node_t* inserting_node);
 TreeErr_t TreeInsertRight(Node_t* base_node, Node_t* inserting_node);
 TreeErr_t TreeSortInsert(Node_t* root, Node_t* node);

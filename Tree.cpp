@@ -2,15 +2,18 @@
 
 // to do: передавать поддеревья
 
-Node_t* TreeNodeCtor(Tree_t data)
+Node_t* TreeNodeCtor(Tree_t data, Node_t* left_som, Node_t* right_som)
 {
     Node_t* node = (Node_t*) calloc(1, sizeof(Node_t));
     if(node == NULL) return NULL;
 
     node->root = NULL;
     node->data = data;
-    node->left = node->right = NULL;
-    node->rank = 0;
+    node->left = left_som;
+    node->right = right_som;
+
+    if (left_som)  left_som->root  = &node->left;
+    if (right_som) right_som->root = &node->right;
 
     return node;
 }
@@ -22,7 +25,6 @@ TreeErr_t TreeInsertLeft(Node_t* base_node, Node_t* inserting_node)
 
     base_node->left = inserting_node;
     inserting_node->root = &base_node->left;
-    inserting_node->rank = base_node->rank + 1;
 
     return TREE_OK;
 }
@@ -34,7 +36,6 @@ TreeErr_t TreeInsertRight(Node_t* base_node, Node_t* inserting_node)
 
     base_node->right = inserting_node;
     inserting_node->root = &base_node->right;
-    inserting_node->rank = base_node->rank + 1;
 
     return TREE_OK;
 }
@@ -73,7 +74,6 @@ TreeErr_t DeleteTreeNode(Node_t* node)
     if (node->right) DeleteTreeNode(node->right);
 
     node->data = 0;
-    node->rank = 0;
     if (node->root) *node->root = NULL;
 
 // to do free();

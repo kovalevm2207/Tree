@@ -2,17 +2,14 @@
 
 int main()
 {
-    Node_t* node1 = TreeNodeCtor(10);
-    Node_t* node2 = TreeNodeCtor(7);
-    TreeSortInsert(node1, node2);
-
-    Node_t* node3 = TreeNodeCtor(20);
-    TreeSortInsert(node1, node3);
+    Node_t* node2 = TreeNodeCtor(7, NULL, NULL);
+    Node_t* node3 = TreeNodeCtor(20, NULL, NULL);
+    Node_t* node1 = TreeNodeCtor(10, node2, node3);
 
     PrintTreeNode(node1, "m");
     printf("\n\n");
 
-    Node_t* node4 = TreeNodeCtor(3);
+    Node_t* node4 = TreeNodeCtor(3, NULL, NULL);
     TreeSortInsert(node1, node4);
 
     PrintTreeNode(node1, "m");
@@ -22,15 +19,15 @@ int main()
            "|         node2 (addres in mem: %p)\n"
            "|      data: %3d\n"
            "|       left:      right:\n"
-           "| %p             %p\n"
-           "|    rank = %d\n\n", node2->root, *(node2->root), node2, node2->data, node2->left, node2->right, node2->rank);
+           "| %p             %p\n\n",
+           node2->root, *(node2->root), node2, node2->data, node2->left, node2->right);
 
     printf("|     root: %p (root value: %p)\n"
            "|         node4 (addres in mem: %p)\n"
            "|      data: %3d\n"
            "|       left:      right:\n"
-           "| %p             %p\n"
-           "|    rank = %d\n\n", node4->root, *(node4->root), node4, node4->data, node4->left, node4->right, node4->rank);
+           "| %p             %p\n\n",
+           node4->root, *(node4->root), node4, node4->data, node4->left, node4->right);
 
 
     printf("\n");
@@ -44,52 +41,38 @@ int main()
            "|         node2 (addres in mem: %p)\n"
            "|      data: %3d\n"
            "|       left:      right:\n"
-           "| %p             %p\n\n", node2->root, *(node2->root), node2, node2->data, node2->left, node2->right);
+           "| %p             %p\n\n",
+           node2->root, *(node2->root), node2, node2->data, node2->left, node2->right);
 
     printf("|     root: %p (root value: %p)\n"
            "|         node4 (addres in mem: %p)\n"
            "|      data: %3d\n"
            "|       left:      right:\n"
-           "| %p             %p\n\n", node4->root, *(node4->root), node4, node4->data, node4->left, node4->right);
+           "| %p             %p\n\n",
+           node4->root, *(node4->root), node4, node4->data, node4->left, node4->right);
 
 
     DeleteTreeNode(node4);
     free(node4);
 
-    node4 = TreeNodeCtor(3);
+    node4 = TreeNodeCtor(3, NULL, NULL);
     TreeInsertLeft(node2, node4);
 
-    Node_t* node5 = TreeNodeCtor(35);
+    Node_t* node5 = TreeNodeCtor(35, NULL, NULL);
     TreeInsertRight(node3, node5);
 
-    Node_t* node6 = TreeNodeCtor(15);
+    Node_t* node6 = TreeNodeCtor(15, NULL, NULL);
     TreeSortInsert(node1, node6);
 
-    Node_t* node7 = TreeNodeCtor(1);
+    Node_t* node7 = TreeNodeCtor(1, NULL, NULL);
     TreeSortInsert(node1, node7);
 
-    Node_t* node8 = TreeNodeCtor(9);
+    Node_t* node8 = TreeNodeCtor(9, NULL, NULL);
     TreeSortInsert(node1, node8);
 
     PrintTreeNode(node1, "m");
     printf("\n\n");
 
-    printf("%s\n", GenerateColor(node1));
-    printf("%s\n", GenerateColor(node2));
-    printf("%s\n", GenerateColor(node3));
-    printf("%s\n", GenerateColor(node4));
-    printf("%s\n", GenerateColor(node5));
-    printf("%s\n", GenerateColor(node6));
-    printf("%s\n", GenerateColor(node7));
-/*
-#ff4400
-#aaff00
-#00ff66
-#8800ff
-#ff0066
-#ffaa00
-#44ff00
-*/
     TreeDump(node1, 1);
     system("google-chrome dump.html");
 
