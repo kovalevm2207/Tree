@@ -76,7 +76,8 @@ TreeErr_t DeleteTreeNode(Node_t* node)
     node->data = 0;
     if (node->root) *node->root = NULL;
 
-// to do free();
+    free(node);
+    node = NULL;
 
     return TREE_OK;
 }

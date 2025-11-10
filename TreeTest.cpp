@@ -53,7 +53,6 @@ int main()
 
 
     DeleteTreeNode(node4);
-    free(node4);
 
     node4 = TreeNodeCtor(3, NULL, NULL);
     TreeInsertLeft(node2, node4);
@@ -78,14 +77,6 @@ int main()
 
 
     DeleteTreeNode(node1);
-    free(node1);
-    free(node2);
-    free(node3);
-    free(node4);
-    free(node5);
-    free(node6);
-    free(node7);
-    free(node8);
 
     return 0;
 }
